@@ -1,0 +1,15 @@
+
+
+{
+  "embeddings": [
+    {
+      "tensorName": "ISTAT - TF",
+      "tensorShape": [
+        190,
+        300
+      ],
+      "tensorPath": "https://raw.githubusercontent.com/IstatConsulting/public/main/EP_sample_wv.tsv",
+      "metadataPath": "https://raw.githubusercontent.com/IstatConsulting/public/main/EP_sample_meta.tsv"
+    }
+  ]
+}
