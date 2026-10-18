@@ -49,7 +49,7 @@ plot_scenarios <- function(metric, ylab) {
     facet_grid(estimand ~ scenario, scales = "free_y") +
     scale_colour_manual(values = est_cols, name = NULL, drop = TRUE) +
     labs(x = "Sample size (n)", y = ylab,
-         caption = "Raw mean omitted from the figure; see rmse_grid_by_scenario.csv.") +
+         caption = "Raw mean omitted (see rmse_grid_by_scenario.csv). (5) and (6) overlap almost exactly.") +
     theme_minimal(base_size = 11) +
     theme(
       legend.position = "bottom",

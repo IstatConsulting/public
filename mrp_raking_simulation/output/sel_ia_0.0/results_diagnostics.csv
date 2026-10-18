@@ -1,0 +1,22 @@
+n,estimator,n_reps,mean_kish_deff,pct_failed,pct_nonconverged,pct_collapsed,mean_empty_ra,pct_singular,pct_conv_warning,estimator_label
+200,mrp_ia,500,NA,0,NA,NA,NA,95,0,(5) MRP: + region x age
+200,mrp_ia_fe,500,NA,0,NA,NA,NA,87.8,0,"(6) MRP: (5), gender fixed"
+200,mrp_int,500,NA,0,NA,NA,NA,85.2,0,(4) MRP: intercepts
+200,mrp_struct,500,NA,0,NA,NA,NA,98.8,0,(7) MRP: (6) + region age slopes
+200,rake_joint,500,1.790983624432361,0,0,63.800000000000004,0.862,NA,NA,(3) Raking: region x age
+200,rake_margin,500,1.7588491132620485,0,0,0,0,NA,NA,(2) Raking: margins
+200,raw,500,NA,0,NA,NA,NA,NA,NA,(1) Raw mean
+500,mrp_ia,500,NA,0,NA,NA,NA,80.2,0,(5) MRP: + region x age
+500,mrp_ia_fe,500,NA,0,NA,NA,NA,56.00000000000001,0,"(6) MRP: (5), gender fixed"
+500,mrp_int,500,NA,0,NA,NA,NA,55.2,0,(4) MRP: intercepts
+500,mrp_struct,500,NA,0,NA,NA,NA,97.6,0,(7) MRP: (6) + region age slopes
+500,rake_joint,500,1.7161570124393384,0,0,3.8,0.038,NA,NA,(3) Raking: region x age
+500,rake_margin,500,1.704403984483628,0,0,0,0,NA,NA,(2) Raking: margins
+500,raw,500,NA,0,NA,NA,NA,NA,NA,(1) Raw mean
+2000,mrp_ia,500,NA,0,NA,NA,NA,53.6,0,(5) MRP: + region x age
+2000,mrp_ia_fe,500,NA,0,NA,NA,NA,43.6,0,"(6) MRP: (5), gender fixed"
+2000,mrp_int,500,NA,0,NA,NA,NA,14.799999999999999,0,(4) MRP: intercepts
+2000,mrp_struct,500,NA,0,NA,NA,NA,91.60000000000001,0,(7) MRP: (6) + region age slopes
+2000,rake_joint,500,1.6787921862669972,0,0,0,0,NA,NA,(3) Raking: region x age
+2000,rake_margin,500,1.6762399174808336,0,0,0,0,NA,NA,(2) Raking: margins
+2000,raw,500,NA,0,NA,NA,NA,NA,NA,(1) Raw mean
