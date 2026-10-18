@@ -1,0 +1,4 @@
+n,mean_empty_cells,mean_cells_1_2,mean_empty_region_age,pct_any_empty_ra,pct_any_empty_region
+200,49.946,42.254,1.498,84.6,0
+500,27,36.026,0.244,22.400000000000002,0
+2000,6.168,17.092,0,0,0
