@@ -3,7 +3,9 @@
 # -----------------------------------------------------------------------------
 # Usage (from this folder):  Rscript run_simulation.R
 # Optional env vars: SIM_R (replications, default 500), SIM_WORKERS,
-#                    SIM_N_STAN (rstanarm subset per condition, 0 = skip)
+#                    SIM_N_STAN (rstanarm subset per condition, 0 = skip),
+#                    SIM_SEL_IA (scaling of the region x age selection term,
+#                    default 1; results go to output/sel_ia_<value>/)
 # =============================================================================
 
 source("R/sim_functions.R")
@@ -20,14 +22,15 @@ sample_sizes <- c(200, 500, 2000)
 R            <- as.integer(Sys.getenv("SIM_R", 500))
 n_stan       <- as.integer(Sys.getenv("SIM_N_STAN", 20))
 workers      <- as.integer(Sys.getenv("SIM_WORKERS", parallel::detectCores()))
-out_dir      <- "output"
-dir.create(out_dir, showWarnings = FALSE)
+sel_ia       <- as.numeric(Sys.getenv("SIM_SEL_IA", 1))
+out_dir      <- file.path("output", sprintf("sel_ia_%.1f", sel_ia))
+dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 # -----------------------------------------------------------------------------
 # Population and samples (all randomness fixed here, before estimation)
 # -----------------------------------------------------------------------------
 set.seed(seed)
-pop         <- simulate_population(N = N_pop)
+pop         <- simulate_population(N = N_pop, sp = scale_selection_ia(k = sel_ia))
 pop_margins <- make_pop_margins(pop$cells)
 
 samples <- map(sample_sizes, \(n) draw_sample_ids(pop, n, R)) |>
@@ -93,7 +96,7 @@ write_csv(sparsity_sum, file.path(out_dir, "results_sparsity.csv"))
 # Plots
 # -----------------------------------------------------------------------------
 # Categorical slots 1-5 of the validated reference palette, fixed order
-est_cols <- c("#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4") |>
+est_cols <- c("#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6") |>
   set_names(estimator_labels)
 
 facet_lab <- c(National = "National", focus_regions)
@@ -121,17 +124,18 @@ plot_metric <- function(df, metric, ylab) {
       panel.grid.major.y = element_line(colour = "grey90", linewidth = 0.3),
       strip.text = element_text(face = "bold", hjust = 0)
     ) +
-    guides(colour = guide_legend(nrow = 2))
+    guides(colour = guide_legend(nrow = 2, byrow = TRUE))
 }
 
 p_rmse <- plot_metric(perf, "rmse", "RMSE (percentage points)") +
   labs(title = "RMSE by estimator and sample size",
-       subtitle = sprintf("%d replications per condition; true support for party A", R))
-ggsave(file.path(out_dir, "fig_rmse.png"), p_rmse, width = 10, height = 4.8, dpi = 200, bg = "white")
+       subtitle = sprintf("%d replications per condition; region x age selection term scaled by %.1f",
+                          R, sel_ia))
+ggsave(file.path(out_dir, "fig_rmse.png"), p_rmse, width = 10.5, height = 5.2, dpi = 200, bg = "white")
 
 p_bias <- plot_metric(perf, "bias", "Bias (percentage points)") +
   labs(title = "Bias by estimator and sample size")
-ggsave(file.path(out_dir, "fig_bias.png"), p_bias, width = 10, height = 4.8, dpi = 200, bg = "white")
+ggsave(file.path(out_dir, "fig_bias.png"), p_bias, width = 10.5, height = 5.2, dpi = 200, bg = "white")
 
 # -----------------------------------------------------------------------------
 # Optional robustness check: rstanarm on a subset of the same samples
@@ -187,6 +191,7 @@ check_lines <- perf |>
     `(3) <= min MRP` = rmse[estimator == "rake_joint"] <=
       min(rmse[estimator %in% c("mrp_int", "mrp_ia")]),
     `(5) within 10% of best` = rmse[estimator == "mrp_ia"] <= 1.1 * min(rmse),
+    `(7) within 10% of best` = rmse[estimator == "mrp_struct"] <= 1.1 * min(rmse),
     .by = c(n, estimand)
   )
 

@@ -82,6 +82,15 @@ selection_params <- list(
   )
 )
 
+#' Scale the region x age selection term (1 = baseline, 0 = margins-only bias)
+#'
+#' The population (including votes) is unaffected: log_incl is deterministic,
+#' so the same seed yields the same population under every scaling.
+scale_selection_ia <- function(sp = selection_params, k = 1) {
+  sp$region_age <- k * sp$region_age
+  sp
+}
+
 # Raking settings, shared by estimators (2) and (3) ----------------------------
 rake_settings <- list(
   control  = list(maxit = 100, epsilon = 1e-6, verbose = FALSE),
@@ -337,13 +346,30 @@ aggregate_sample <- function(samp) {
   samp |>
     summarise(y = sum(vote), n = n(),
               .by = c(cell, region, age, gender, educ, region_age)) |>
-    mutate(across(c(region, age, gender, educ), as.character))
+    mutate(across(c(region, age, gender, educ), as.character),
+           age_c = match(age, age_lv) - 2.5)
+}
+
+#' Prediction frame for all 120 cells, matching aggregate_sample() columns
+mrp_newdata <- function(cells) {
+  cells |>
+    select(region, age, gender, educ, region_age) |>
+    mutate(across(c(region, age, gender, educ), as.character),
+           age_c = match(age, age_lv) - 2.5)
 }
 
 mrp_formulas <- list(
   mrp_int = cbind(y, n - y) ~ 1 + (1 | age) + (1 | gender) + (1 | region) + (1 | educ),
   mrp_ia  = cbind(y, n - y) ~ 1 + (1 | age) + (1 | gender) + (1 | region) + (1 | educ) +
-    (1 | region_age)
+    (1 | region_age),
+  # (6) as (5), gender as fixed effect (two-level variance is unidentifiable)
+  mrp_ia_fe = cbind(y, n - y) ~ gender + (1 | age) + (1 | region) + (1 | educ) +
+    (1 | region_age),
+  # (7) structured interaction: region-specific linear age slopes (uncorrelated
+  # with region intercepts) around a fixed common slope, plus residual
+  # region x age intercepts; (1 | age) captures non-linearity in age
+  mrp_struct = cbind(y, n - y) ~ gender + age_c + (1 | age) + (1 | educ) +
+    (1 + age_c || region) + (1 | region_age)
 )
 
 #' Poststratify cell predictions with the true joint counts
@@ -381,9 +407,7 @@ est_mrp <- function(samp_agg, cells, formula) {
     ))
   }
 
-  newdata <- cells |>
-    select(region, age, gender, educ, region_age) |>
-    mutate(across(c(region, age, gender, educ), as.character))
+  newdata <- mrp_newdata(cells)
   pred <- predict(fit, newdata = newdata, type = "response", allow.new.levels = TRUE)
 
   list(
@@ -410,9 +434,7 @@ est_mrp_stan <- function(samp_agg, cells, formula, seed,
       }
     }
   )
-  newdata <- cells |>
-    select(region, age, gender, educ, region_age) |>
-    mutate(across(c(region, age, gender, educ), as.character))
+  newdata <- mrp_newdata(cells)
   # draws x cells; new region_age levels are drawn from the fitted distribution
   epred <- rstanarm::posterior_epred(fit, newdata = newdata)
   N_c <- cells$N_c
@@ -439,7 +461,7 @@ est_mrp_stan <- function(samp_agg, cells, formula, seed,
 }
 
 # -----------------------------------------------------------------------------
-# 4. One replication: same sample -> all five estimators
+# 4. One replication: same sample -> all estimators
 # -----------------------------------------------------------------------------
 
 run_one_rep <- function(ids, pop, pop_margins) {
@@ -452,7 +474,9 @@ run_one_rep <- function(ids, pop, pop_margins) {
     rake_margin = est_rake_margins(samp, pop_margins, pop$N),
     rake_joint  = est_rake_joint(samp, pop_margins, pop$N),
     mrp_int     = est_mrp(agg, cells, mrp_formulas$mrp_int),
-    mrp_ia      = est_mrp(agg, cells, mrp_formulas$mrp_ia)
+    mrp_ia      = est_mrp(agg, cells, mrp_formulas$mrp_ia),
+    mrp_ia_fe   = est_mrp(agg, cells, mrp_formulas$mrp_ia_fe),
+    mrp_struct  = est_mrp(agg, cells, mrp_formulas$mrp_struct)
   )
 
   list(
@@ -471,7 +495,9 @@ estimator_labels <- c(
   rake_margin = "(2) Raking: margins",
   rake_joint  = "(3) Raking: region x age",
   mrp_int     = "(4) MRP: intercepts",
-  mrp_ia      = "(5) MRP: + region x age"
+  mrp_ia      = "(5) MRP: + region x age",
+  mrp_ia_fe   = "(6) MRP: (5), gender fixed",
+  mrp_struct  = "(7) MRP: (6) + region age slopes"
 )
 
 #' Bias, empirical SD and RMSE per estimator x estimand x sample size
@@ -508,6 +534,6 @@ summarise_diagnostics <- function(diag) {
       across(c(mean_kish_deff, pct_nonconverged, pct_collapsed, mean_empty_ra),
              \(x) if_else(estimator %in% c("rake_margin", "rake_joint"), x, NA_real_)),
       across(c(pct_singular, pct_conv_warning),
-             \(x) if_else(estimator %in% c("mrp_int", "mrp_ia"), x, NA_real_))
+             \(x) if_else(str_starts(estimator, "mrp"), x, NA_real_))
     )
 }
