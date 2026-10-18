@@ -63,6 +63,28 @@ outcome_params <- list(
   )
 )
 
+#' Non-linear alternative for the region x age interaction
+#'
+#' Each row is exactly orthogonal to the linear age contrast (-1.5, -0.5, 0.5,
+#' 1.5), so region-specific linear age slopes cannot capture any of it, and
+#' has (approximately) the same RMS as the corresponding linear row: R2 a
+#' mid-age peak at 30-44, R5 a U-shape (young and old pro-A), R1 a small
+#' cubic wiggle. The young cells keep their sign, so selection stays aligned.
+region_age_nonlinear <- rbind(
+  R1 = c(-0.10, 0.30, -0.30, 0.10),
+  R2 = c(-0.70, 1.10, -0.10, -0.30),
+  R3 = c(0, 0, 0, 0),
+  R4 = c(0, 0, 0, 0),
+  R5 = c(0.69, -0.69, -0.69, 0.69)
+)
+
+#' Outcome parameters with a linear (baseline) or non-linear interaction
+outcome_with_shape <- function(shape = c("linear", "nonlinear"), op = outcome_params) {
+  shape <- match.arg(shape)
+  if (shape == "nonlinear") op$region_age <- region_age_nonlinear
+  op
+}
+
 # Selection (inclusion propensity, log scale) ----------------------------------
 # Younger groups and regions R2, R3 oversampled; R5 undersampled. The region x
 # age term is aligned with the outcome interaction: anti-A young in R2 are

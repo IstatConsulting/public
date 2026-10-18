@@ -5,7 +5,9 @@
 # Optional env vars: SIM_R (replications, default 500), SIM_WORKERS,
 #                    SIM_N_STAN (rstanarm subset per condition, 0 = skip),
 #                    SIM_SEL_IA (scaling of the region x age selection term,
-#                    default 1; results go to output/sel_ia_<value>/)
+#                    default 1), SIM_IA_SHAPE (outcome interaction: "linear",
+#                    default, or "nonlinear"); results go to
+#                    output/[nonlin_]sel_ia_<value>/
 # =============================================================================
 
 source("R/sim_functions.R")
@@ -23,14 +25,17 @@ R            <- as.integer(Sys.getenv("SIM_R", 500))
 n_stan       <- as.integer(Sys.getenv("SIM_N_STAN", 20))
 workers      <- as.integer(Sys.getenv("SIM_WORKERS", parallel::detectCores()))
 sel_ia       <- as.numeric(Sys.getenv("SIM_SEL_IA", 1))
-out_dir      <- file.path("output", sprintf("sel_ia_%.1f", sel_ia))
+ia_shape     <- Sys.getenv("SIM_IA_SHAPE", "linear")
+out_dir      <- file.path("output", sprintf("%ssel_ia_%.1f",
+                                            if (ia_shape == "nonlinear") "nonlin_" else "", sel_ia))
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 # -----------------------------------------------------------------------------
 # Population and samples (all randomness fixed here, before estimation)
 # -----------------------------------------------------------------------------
 set.seed(seed)
-pop         <- simulate_population(N = N_pop, sp = scale_selection_ia(k = sel_ia))
+pop         <- simulate_population(N = N_pop, op = outcome_with_shape(ia_shape),
+                                   sp = scale_selection_ia(k = sel_ia))
 pop_margins <- make_pop_margins(pop$cells)
 
 samples <- map(sample_sizes, \(n) draw_sample_ids(pop, n, R)) |>
@@ -129,8 +134,8 @@ plot_metric <- function(df, metric, ylab) {
 
 p_rmse <- plot_metric(perf, "rmse", "RMSE (percentage points)") +
   labs(title = "RMSE by estimator and sample size",
-       subtitle = sprintf("%d replications per condition; region x age selection term scaled by %.1f",
-                          R, sel_ia))
+       subtitle = sprintf("%d replications per condition; %s outcome interaction; region x age selection term scaled by %.1f",
+                          R, ia_shape, sel_ia))
 ggsave(file.path(out_dir, "fig_rmse.png"), p_rmse, width = 10.5, height = 5.2, dpi = 200, bg = "white")
 
 p_bias <- plot_metric(perf, "bias", "Bias (percentage points)") +
