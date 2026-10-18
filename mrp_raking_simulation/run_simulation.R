@@ -100,9 +100,8 @@ write_csv(sparsity_sum, file.path(out_dir, "results_sparsity.csv"))
 # -----------------------------------------------------------------------------
 # Plots
 # -----------------------------------------------------------------------------
-# Categorical slots 1-5 of the validated reference palette, fixed order
-est_cols <- c("#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6") |>
-  set_names(estimator_labels)
+# Fixed colour per estimator (estimator_cols in R/sim_functions.R)
+est_cols <- label_cols()
 
 facet_lab <- c(National = "National", focus_regions)
 

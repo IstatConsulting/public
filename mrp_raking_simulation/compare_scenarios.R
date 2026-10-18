@@ -32,8 +32,7 @@ rmse_grid <- results |>
 write_csv(rmse_grid, file.path(out_dir, "rmse_grid_by_scenario.csv"))
 
 # Figures: raw mean omitted (its RMSE dominates the scale), see tables
-est_cols <- c("#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6") |>
-  set_names(estimator_labels)
+est_cols <- label_cols()
 facet_lab <- c(National = "National", focus_regions)
 
 plot_scenarios <- function(df, metric, ylab, cols = "scenario") {

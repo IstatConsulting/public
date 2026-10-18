@@ -387,6 +387,10 @@ mrp_formulas <- list(
   # (6) as (5), gender as fixed effect (two-level variance is unidentifiable)
   mrp_ia_fe = cbind(y, n - y) ~ gender + (1 | age) + (1 | region) + (1 | educ) +
     (1 | region_age),
+  # (6b) as (6), plus a fixed linear trend over ordered age; (1 | age) then
+  # only captures departures from linearity (decomposes (6) -> (7))
+  mrp_ia_fe_lin = cbind(y, n - y) ~ gender + age_c + (1 | age) + (1 | region) +
+    (1 | educ) + (1 | region_age),
   # (7) structured interaction: region-specific linear age slopes (uncorrelated
   # with region intercepts) around a fixed common slope, plus residual
   # region x age intercepts; (1 | age) captures non-linearity in age
@@ -498,6 +502,7 @@ run_one_rep <- function(ids, pop, pop_margins) {
     mrp_int     = est_mrp(agg, cells, mrp_formulas$mrp_int),
     mrp_ia      = est_mrp(agg, cells, mrp_formulas$mrp_ia),
     mrp_ia_fe   = est_mrp(agg, cells, mrp_formulas$mrp_ia_fe),
+    mrp_ia_fe_lin = est_mrp(agg, cells, mrp_formulas$mrp_ia_fe_lin),
     mrp_struct  = est_mrp(agg, cells, mrp_formulas$mrp_struct)
   )
 
@@ -519,8 +524,18 @@ estimator_labels <- c(
   mrp_int     = "(4) MRP: intercepts",
   mrp_ia      = "(5) MRP: + region x age",
   mrp_ia_fe   = "(6) MRP: (5), gender fixed",
-  mrp_struct  = "(7) MRP: (6) + region age slopes"
+  mrp_ia_fe_lin = "(6b) MRP: (6) + linear age trend",
+  mrp_struct  = "(7) MRP: (6b) + region age slopes"
 )
+
+# Categorical slots of the validated reference palette, fixed per estimator
+# (colour follows the estimator, not its position in a given plot)
+estimator_cols <- c(
+  raw = "#2a78d6", rake_margin = "#eb6834", rake_joint = "#1baf7a",
+  mrp_int = "#eda100", mrp_ia = "#e87ba4", mrp_ia_fe = "#008300",
+  mrp_ia_fe_lin = "#e34948", mrp_struct = "#6250d6"
+)
+label_cols <- function() set_names(estimator_cols[names(estimator_labels)], estimator_labels)
 
 #' Bias, empirical SD and RMSE per estimator x estimand x sample size
 summarise_performance <- function(estimates, truth) {
