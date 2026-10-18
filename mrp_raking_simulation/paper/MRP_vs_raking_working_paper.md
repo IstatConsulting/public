@@ -4,7 +4,7 @@ Zoltán Kmetty · 18 October 2026
 
 ## Summary
 
-Use MRP when you need estimates for small subgroups, above all subgroups the sample under-covers, and when the sample is small. In our simulation MRP cut the error for a small, undersampled region by more than half at n = 200 (RMSE 9.4 vs. 21.9 percentage points for the better raking estimator). For national estimates the two methods converge once n reaches about 500, and raking on the right margins is as accurate as MRP and simpler.
+Use multilevel regression and poststratification (MRP, often called "Mister P"; Gelman and Little 1997) when you need estimates for small subgroups, above all subgroups the sample under-covers, and when the sample is small. In our simulation MRP cut the error for a small, undersampled region by more than half at n = 200 (root mean squared error, RMSE, 9.4 vs. 21.9 percentage points for the better raking estimator). For national estimates the two methods converge once n reaches about 500, and raking on the right margins is as accurate as MRP and simpler.
 
 Neither method removes a bias it is not told about. Raking fails when selection runs through a combination of variables that is not among its margins; MRP fails when the outcome depends on a combination its model leaves out. Adding the relevant interaction to either method (a joint margin in raking, a varying intercept in MRP) removes most of that bias.
 
@@ -105,3 +105,5 @@ The R code (tidyverse, survey, lme4) and all results are in the [mrp_raking_simu
 ## References
 
 Gelman, A., Hill, J. and Vehtari, A. (2020). *Regression and Other Stories*. Cambridge University Press. Chapter 17, "Poststratification and missing-data imputation", pp. 313–335. [Free PDF](https://users.aalto.fi/~ave/ROS.pdf); [example code for chapter 17](https://github.com/avehtari/ROS-Examples/tree/master/Poststrat).
+
+Gelman, A. and Little, T. C. (1997). Poststratification into many categories using hierarchical logistic regression. *Survey Methodology* 23(2): 127–135.
