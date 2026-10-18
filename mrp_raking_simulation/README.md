@@ -5,7 +5,7 @@ outperforms raking for a binary outcome (support for party A), varying sample
 size, cell sparsity, and whether each estimator accounts for a region × age
 interaction that exists in both the outcome and the selection mechanism.
 
-Working paper (short write-up for colleagues): `paper/MRP_vs_raking_working_paper.docx`.
+Working paper (short write-up for colleagues): [`paper/MRP_vs_raking_working_paper.md`](paper/MRP_vs_raking_working_paper.md), also as Word (`paper/MRP_vs_raking_working_paper.docx`).
 
 ## Running
 
