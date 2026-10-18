@@ -1,22 +1,25 @@
 n,estimator,n_reps,mean_kish_deff,pct_failed,pct_nonconverged,pct_collapsed,mean_empty_ra,pct_singular,pct_conv_warning,estimator_label
 200,mrp_ia,500,NA,0,NA,NA,NA,92.80000000000001,0,(5) MRP: + region x age
 200,mrp_ia_fe,500,NA,0,NA,NA,NA,84.2,0,"(6) MRP: (5), gender fixed"
+200,mrp_ia_fe_lin,500,NA,0,NA,NA,NA,98.2,0,(6b) MRP: (6) + linear age trend
 200,mrp_int,500,NA,0,NA,NA,NA,77.60000000000001,0,(4) MRP: intercepts
-200,mrp_struct,500,NA,0,NA,NA,NA,99.4,0,(7) MRP: (6) + region age slopes
+200,mrp_struct,500,NA,0,NA,NA,NA,99.4,0,(7) MRP: (6b) + region age slopes
 200,rake_joint,500,1.9149886583977123,0,0,84.6,1.498,NA,NA,(3) Raking: region x age
 200,rake_margin,500,1.849420060958012,0,0,0,0,NA,NA,(2) Raking: margins
 200,raw,500,NA,0,NA,NA,NA,NA,NA,(1) Raw mean
 500,mrp_ia,500,NA,0,NA,NA,NA,74.4,0,(5) MRP: + region x age
 500,mrp_ia_fe,500,NA,0,NA,NA,NA,50.6,0,"(6) MRP: (5), gender fixed"
+500,mrp_ia_fe_lin,500,NA,0,NA,NA,NA,97.39999999999999,0,(6b) MRP: (6) + linear age trend
 500,mrp_int,500,NA,0,NA,NA,NA,49.6,0,(4) MRP: intercepts
-500,mrp_struct,500,NA,0,NA,NA,NA,99.2,0,(7) MRP: (6) + region age slopes
+500,mrp_struct,500,NA,0,NA,NA,NA,99.2,0,(7) MRP: (6b) + region age slopes
 500,rake_joint,500,1.8252692936317476,0,0,22.400000000000002,0.244,NA,NA,(3) Raking: region x age
 500,rake_margin,500,1.7904975508902825,0,0,0,0,NA,NA,(2) Raking: margins
 500,raw,500,NA,0,NA,NA,NA,NA,NA,(1) Raw mean
 2000,mrp_ia,500,NA,0,NA,NA,NA,41.199999999999996,0,(5) MRP: + region x age
 2000,mrp_ia_fe,500,NA,0,NA,NA,NA,27.200000000000003,0,"(6) MRP: (5), gender fixed"
+2000,mrp_ia_fe_lin,500,NA,0,NA,NA,NA,98.8,0,(6b) MRP: (6) + linear age trend
 2000,mrp_int,500,NA,0,NA,NA,NA,16.2,0,(4) MRP: intercepts
-2000,mrp_struct,500,NA,0,NA,NA,NA,89.8,0,(7) MRP: (6) + region age slopes
+2000,mrp_struct,500,NA,0,NA,NA,NA,89.8,0,(7) MRP: (6b) + region age slopes
 2000,rake_joint,500,1.761333779684067,0,0,0,0,NA,NA,(3) Raking: region x age
 2000,rake_margin,500,1.7437458038981875,0,0,0,0,NA,NA,(2) Raking: margins
 2000,raw,500,NA,0,NA,NA,NA,NA,NA,(1) Raw mean
