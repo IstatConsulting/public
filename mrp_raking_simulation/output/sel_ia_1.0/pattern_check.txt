@@ -1,0 +1,135 @@
+RMSE (pp) by condition
+# A tibble: 18 x 10
+       n estimand mrp_ia mrp_ia_fe mrp_ia_fe_lin mrp_int mrp_struct rake_joint
+   <int> <chr>     <dbl>     <dbl>         <dbl>   <dbl>      <dbl>      <dbl>
+ 1   200 National   5.28      5.37          4.43    5.27       4.42       4.71
+ 2   500 National   3.21      3.27          2.78    3.16       2.73       2.88
+ 3  2000 National   1.56      1.58          1.47    1.54       1.45       1.48
+ 4   200 R1         6.79      6.73          7.22    6.87       7.53       9.78
+ 5   500 R1         5.06      5.02          5.4     5.1        6.06       5.9 
+ 6  2000 R1         3.15      3.12          3.34    3.49       3.57       3.07
+ 7   200 R2         8.52      8.58          6.82    9.21       6.45      11.4 
+ 8   500 R2         6.83      6.89          6.23    8.31       4.8        6.25
+ 9  2000 R2         4.44      4.48          4.7     8.53       2.89       3.1 
+10   200 R3         7.01      7.03          5.93    7.19       5.91       7.03
+11   500 R3         4.21      4.2           3.88    4.28       3.97       4.18
+12  2000 R3         1.87      1.88          1.84    1.89       1.85       1.94
+13   200 R4         8.14      8.39          7.02    8.18       6.93      10.5 
+14   500 R4         5.72      5.88          5.29    5.63       5.21       6.61
+15  2000 R4         2.97      3             2.86    2.89       2.84       3.19
+16   200 R5         9.8       9.82          7.48    9.42       7.85      21.9 
+17   500 R5         7.34      7.36          5.92    6.86       6.5       13.2 
+18  2000 R5         4.65      4.65          4.24    4.29       4.86       5.91
+   rake_margin   raw
+         <dbl> <dbl>
+ 1        4.8  10.0 
+ 2        3.08  9.76
+ 3        1.78  9.27
+ 4        9.6   8.7 
+ 5        5.85  6.44
+ 6        3.05  4.78
+ 7       13.0  18.3 
+ 8        9.98 17   
+ 9        8.67 16.4 
+10        7.02  9.8 
+11        4.3   8.81
+12        2.03  8.22
+13       10.5  12.0 
+14        6.69 10.2 
+15        3.26  8.66
+16       22.0  20.3 
+17       13.5  12.4 
+18        6.29  5.75
+
+Expected-pattern checks
+# A tibble: 9 x 6
+      n estimand best          `(3) <= min MRP` `(5) within 10% of best`
+  <int> <chr>    <chr>         <lgl>            <lgl>                   
+1   200 National mrp_struct    TRUE             FALSE                   
+2   500 National mrp_struct    TRUE             FALSE                   
+3  2000 National mrp_struct    TRUE             TRUE                    
+4   200 R2       mrp_struct    FALSE            FALSE                   
+5   500 R2       mrp_struct    TRUE             FALSE                   
+6  2000 R2       mrp_struct    TRUE             FALSE                   
+7   200 R5       mrp_ia_fe_lin FALSE            FALSE                   
+8   500 R5       mrp_ia_fe_lin FALSE            FALSE                   
+9  2000 R5       mrp_ia_fe_lin FALSE            TRUE                    
+  `(7) within 10% of best`
+  <lgl>                   
+1 TRUE                    
+2 TRUE                    
+3 TRUE                    
+4 TRUE                    
+5 TRUE                    
+6 TRUE                    
+7 TRUE                    
+8 TRUE                    
+9 FALSE                   
+
+Sparsity
+# A tibble: 3 x 6
+      n mean_empty_cells mean_cells_1_2 mean_empty_region_age pct_any_empty_ra
+  <int>            <dbl>          <dbl>                 <dbl>            <dbl>
+1   200            49.9            42.3                 1.50              84.6
+2   500            27              36.0                 0.244             22.4
+3  2000             6.17           17.1                 0                  0  
+  pct_any_empty_region
+                 <dbl>
+1                    0
+2                    0
+3                    0
+
+Diagnostics
+# A tibble: 24 x 10
+       n estimator     n_reps mean_kish_deff pct_failed pct_nonconverged
+   <int> <chr>          <int>          <dbl>      <dbl>            <dbl>
+ 1   200 mrp_ia           500          NA             0               NA
+ 2   200 mrp_ia_fe        500          NA             0               NA
+ 3   200 mrp_ia_fe_lin    500          NA             0               NA
+ 4   200 mrp_int          500          NA             0               NA
+ 5   200 mrp_struct       500          NA             0               NA
+ 6   200 rake_joint       500           1.91          0                0
+ 7   200 rake_margin      500           1.85          0                0
+ 8   200 raw              500          NA             0               NA
+ 9   500 mrp_ia           500          NA             0               NA
+10   500 mrp_ia_fe        500          NA             0               NA
+11   500 mrp_ia_fe_lin    500          NA             0               NA
+12   500 mrp_int          500          NA             0               NA
+13   500 mrp_struct       500          NA             0               NA
+14   500 rake_joint       500           1.83          0                0
+15   500 rake_margin      500           1.79          0                0
+16   500 raw              500          NA             0               NA
+17  2000 mrp_ia           500          NA             0               NA
+18  2000 mrp_ia_fe        500          NA             0               NA
+19  2000 mrp_ia_fe_lin    500          NA             0               NA
+20  2000 mrp_int          500          NA             0               NA
+21  2000 mrp_struct       500          NA             0               NA
+22  2000 rake_joint       500           1.76          0                0
+23  2000 rake_margin      500           1.74          0                0
+24  2000 raw              500          NA             0               NA
+   pct_collapsed mean_empty_ra pct_singular pct_conv_warning
+           <dbl>         <dbl>        <dbl>            <dbl>
+ 1          NA          NA             92.8                0
+ 2          NA          NA             84.2                0
+ 3          NA          NA             98.2                0
+ 4          NA          NA             77.6                0
+ 5          NA          NA             99.4                0
+ 6          84.6         1.50          NA                 NA
+ 7           0           0             NA                 NA
+ 8          NA          NA             NA                 NA
+ 9          NA          NA             74.4                0
+10          NA          NA             50.6                0
+11          NA          NA             97.4                0
+12          NA          NA             49.6                0
+13          NA          NA             99.2                0
+14          22.4         0.244         NA                 NA
+15           0           0             NA                 NA
+16          NA          NA             NA                 NA
+17          NA          NA             41.2                0
+18          NA          NA             27.2                0
+19          NA          NA             98.8                0
+20          NA          NA             16.2                0
+21          NA          NA             89.8                0
+22           0           0             NA                 NA
+23           0           0             NA                 NA
+24          NA          NA             NA                 NA
